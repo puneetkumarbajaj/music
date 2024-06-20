@@ -1,41 +1,41 @@
-import { Metadata } from "next"
+"use client";
 import Image from "next/image"
 import { Menu } from "./menu"
 import { Sidebar } from "./sidebar"
 import { playlists } from "@/data/playlists"
 import ListenNow from "./listen-now"
-
-export const metadata: Metadata = {
-  title: "Music App",
-  description: "Example music app using the components.",
-}
+import React from "react"
 
 export default function MusicPage() {
+
+  const [view, setView] = React.useState("listen-now");
+  const [globalPlaylistId, setGlobalPlaylistId] = React.useState<string | null>(null);
+
   return (
     <>
       <div className="md:hidden">
-        <Image
-          src="/examples/music-light.png"
-          width={1280}
-          height={1114}
-          alt="Music"
-          className="block dark:hidden"
-        />
-        <Image
-          src="/examples/music-dark.png"
-          width={1280}
-          height={1114}
-          alt="Music"
-          className="hidden dark:block"
-        />
+        <div className="flex items-center justify-center h-dvh text-balance text-center">
+          We are still working on the mobile version please continue using the desktop version for now.<br/> Thank you for your patience
+        </div>
       </div>
       <div className="hidden md:block">
-        <Menu />
         <div className="border-t">
           <div className="bg-background">
             <div className="grid lg:grid-cols-5">
-              <Sidebar playlists={playlists} className="hidden lg:block" />
-              <ListenNow />
+              <div className="sticky top-0 flex-1">
+              <Sidebar
+                view={view}
+                setView={setView} 
+                playlists={playlists} 
+                className="hidden lg:block sticky top-10 overflow-auto" 
+                setGlobalPlaylistId={setGlobalPlaylistId}
+              />
+              </div>
+              <div className="col-span-4 overflow-auto">
+                {
+                  view === "listen-now" && <ListenNow />
+                }
+              </div>
             </div>
           </div>
         </div>

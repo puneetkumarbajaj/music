@@ -17,7 +17,7 @@ import {
 
 export function Menu() {
   return (
-    <Menubar className="rounded-none border-b border-none px-2 lg:px-4">
+    <Menubar className="rounded-none border-b border-none px-2 lg:px-4 z-10 sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <MenubarMenu>
         <MenubarTrigger className="font-bold">Music</MenubarTrigger>
         <MenubarContent>
