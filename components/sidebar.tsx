@@ -1,18 +1,41 @@
 import { cn } from "@/lib/utils"
 import { Button } from "./ui/button"
 import { ScrollArea } from "./ui/scroll-area"
-
-import { Playlist } from "@/data/playlists"
+import { useSession } from "next-auth/react"
+//import { Playlist } from "@/data/playlists"
 import { Icons } from "./icons"
+import React from "react"
+import { fetchPlaylists } from "@/lib/Spotifymethods"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
-  playlists: Playlist[]
   view: string;
   setView: (view: string) => void;
   setGlobalPlaylistId: (id: string | null) => void;
+  globalPlaylistId: string | null;
 }
 
-export function Sidebar({ className, playlists,setView, view, setGlobalPlaylistId }: SidebarProps) {
+export function Sidebar({ className, setView, globalPlaylistId, view, setGlobalPlaylistId }: SidebarProps) {
+
+  const {data:session} = useSession();
+  const [x, setX] = React.useState("");
+  const [Spotifyplaylists, setSpotifyPlaylists] = React.useState<Playlist[]>([])
+
+  React.useEffect(() => {
+    async function fetchData() {
+      if (session && session.accessToken) {
+        try{
+          const items = await fetchPlaylists(session.accessToken, session.user?.id as string);
+          setSpotifyPlaylists(items);
+        } catch (error) {
+          console.error('Error fetching playlists:', error);
+        }
+      }
+    }
+  
+    fetchData();
+  }, [session]);
+
+
   return (
     <div className={cn("pb-12", className)}>
       <div className="space-y-4 py-4">
@@ -68,19 +91,18 @@ export function Sidebar({ className, playlists,setView, view, setGlobalPlaylistI
           </h2>
           <ScrollArea className="h-[300px] px-1">
             <div className="space-y-1 p-2">
-              {playlists?.map((playlist, i) => (
+              {Spotifyplaylists?.map((playlist, i) => (
                 <Button
                   key={`${playlist}-${i}`}
-                  variant="ghost"
-                  //variant={view==="playlist" ? "secondary" : "ghost"}
+                  variant={view==="playlist" && globalPlaylistId ===playlist.id ? "secondary" : "ghost"}
                   className="w-full justify-start font-normal"
                   onClick={()=> {
                     setView("playlist")
-                    //setGlobalPlaylistId(playlist.id)
+                    setGlobalPlaylistId(playlist.id)
                   }}
                 >
                   <Icons.playlist/>
-                  {playlist}
+                  {playlist.name}
                 </Button>
               ))}
             </div>

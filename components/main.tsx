@@ -1,8 +1,5 @@
 "use client";
-import Image from "next/image"
-import { Menu } from "./menu"
 import { Sidebar } from "./sidebar"
-import { playlists } from "@/data/playlists"
 import ListenNow from "./listen-now"
 import React from "react"
 
@@ -26,9 +23,9 @@ export default function MusicPage() {
               <Sidebar
                 view={view}
                 setView={setView} 
-                playlists={playlists} 
                 className="hidden lg:block sticky top-10 overflow-auto" 
                 setGlobalPlaylistId={setGlobalPlaylistId}
+                globalPlaylistId = {globalPlaylistId}
               />
               </div>
               <div className="col-span-4 overflow-auto">

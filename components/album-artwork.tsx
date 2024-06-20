@@ -17,14 +17,14 @@ import { Album } from "@/data/albums";
 import { playlists } from "@/data/playlists";
 
 interface AlbumArtworkProps extends React.HTMLAttributes<HTMLDivElement> {
-  album: Album;
+  playlist: Playlist;
   aspectRatio?: "portrait" | "square";
   width?: number;
   height?: number;
 }
 
 export function AlbumArtwork({
-  album,
+  playlist,
   aspectRatio = "portrait",
   width,
   height,
@@ -37,8 +37,8 @@ export function AlbumArtwork({
         <ContextMenuTrigger>
           <div className="overflow-hidden rounded-md">
             <Image
-              src={album.cover}
-              alt={album.name}
+              src={playlist.images[0].url}
+              alt={playlist.name}
               width={width}
               height={height}
               className={cn(
@@ -87,8 +87,8 @@ export function AlbumArtwork({
         </ContextMenuContent>
       </ContextMenu>
       <div className="space-y-1 text-sm">
-        <h3 className="font-medium leading-none">{album.name}</h3>
-        <p className="text-xs text-muted-foreground">{album.artist}</p>
+        <h3 className="font-medium leading-none">{playlist.name}</h3>
+        <p className="text-xs text-muted-foreground">{playlist.owner.display_name}</p>
       </div>
     </div>
   );

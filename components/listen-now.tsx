@@ -7,8 +7,34 @@ import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import { AlbumArtwork } from "./album-artwork";
 import { PodcastEmptyPlaceholder } from "./podcast-empty-placeholder";
 import { listenNowAlbums, madeForYouAlbums } from "@/data/albums";
+import { signIn, useSession } from "next-auth/react";
+import React from "react";
+import { getFeaturedPlaylists } from "@/lib/Spotifymethods";
+import { playlists } from '../data/playlists';
 
 export default function ListenNow() {
+
+
+const {data:session} = useSession();
+  const [x, setX] = React.useState("");
+  const [Spotifyplaylists, setSpotifyPlaylists] = React.useState<Playlist[]>([])
+
+  React.useEffect(() => {
+    async function fetchData() {
+      if (session && session.accessToken) {
+        try{
+          const items = await getFeaturedPlaylists(session.accessToken);
+          setSpotifyPlaylists(items);
+        } catch (error) {
+          console.error('Error fetching playlists:', error);
+        }
+      }
+    }
+  
+    fetchData();
+    console.log(Spotifyplaylists);
+  }, [session]);
+
   return (
     <div className="col-span-3 lg:col-span-4 lg:border-l overflow-auto">
       <div className="h-full px-4 py-6 lg:px-8">
@@ -24,7 +50,7 @@ export default function ListenNow() {
               </TabsTrigger>
             </TabsList>
             <div className="ml-auto mr-4">
-              <Button>
+              <Button onClick={()=>signIn('spotify', {callbackUrl: "/"})}>
                 <PlusCircledIcon className="mr-2 h-4 w-4" />
                 Add music
               </Button>
@@ -45,10 +71,10 @@ export default function ListenNow() {
             <div className="relative">
               <ScrollArea>
                 <div className="flex space-x-4 pb-4">
-                  {listenNowAlbums.map((album) => (
+                  {Spotifyplaylists?.map((playlist) => (
                     <AlbumArtwork
-                      key={album.name}
-                      album={album}
+                      key={playlist.id}
+                      playlist={playlist}
                       className="w-[250px]"
                       aspectRatio="portrait"
                       width={250}
@@ -71,10 +97,10 @@ export default function ListenNow() {
             <div className="relative">
               <ScrollArea>
                 <div className="flex space-x-4 pb-4">
-                  {madeForYouAlbums.map((album) => (
+                  {Spotifyplaylists.map((playlist) => (
                     <AlbumArtwork
-                      key={album.name}
-                      album={album}
+                      key={playlist.name}
+                      playlist={playlist}
                       className="w-[150px]"
                       aspectRatio="square"
                       width={150}
