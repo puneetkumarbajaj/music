@@ -2,10 +2,10 @@ import { cn } from "@/lib/utils"
 import { Button } from "./ui/button"
 import { ScrollArea } from "./ui/scroll-area"
 import { useSession } from "next-auth/react"
-//import { Playlist } from "@/data/playlists"
 import { Icons } from "./icons"
 import React from "react"
 import { fetchPlaylists } from "@/lib/Spotifymethods"
+import { Playlist } from "spotify-types"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   view: string;

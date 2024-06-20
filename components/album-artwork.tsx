@@ -12,9 +12,7 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "./ui/context-menu";
-
-import { Album } from "@/data/albums";
-import { playlists } from "@/data/playlists";
+import { Playlist } from "spotify-types";
 
 interface AlbumArtworkProps extends React.HTMLAttributes<HTMLDivElement> {
   playlist: Playlist;
@@ -58,7 +56,7 @@ export function AlbumArtwork({
                 New Playlist
               </ContextMenuItem>
               <ContextMenuSeparator />
-              {playlists.map((playlist) => (
+              {/* {playlists.map((playlist) => (
                 <ContextMenuItem key={playlist}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -74,7 +72,7 @@ export function AlbumArtwork({
                   </svg>
                   {playlist}
                 </ContextMenuItem>
-              ))}
+              ))} */}
             </ContextMenuSubContent>
           </ContextMenuSub>
           <ContextMenuSeparator />

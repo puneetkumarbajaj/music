@@ -1,3 +1,6 @@
+@import "swiper/css";
+@import "swiper/css/scrollbar";
+
 @tailwind base;
   @tailwind components;
   @tailwind utilities;
@@ -74,3 +77,24 @@
       @apply bg-background text-foreground;
     }
   }
+
+
+  .scroll-container {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch; /* Important for iOS devices */
+    scroll-snap-type: x mandatory; /* Optional: enhances the swipe experience by snapping elements */
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none;  /* For Internet Explorer and Edge */
+  }
+  
+  .scroll-container::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Opera */
+  }
+  
+  .album-artwork {
+    flex: 0 0 auto; /* Ensures that children do not stretch */
+    margin: 0 10px; /* Optional: adds spacing between items */
+  }
+  

@@ -3,36 +3,47 @@ import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { Button } from "./ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Separator } from "./ui/separator";
-import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import { AlbumArtwork } from "./album-artwork";
 import { PodcastEmptyPlaceholder } from "./podcast-empty-placeholder";
-import { listenNowAlbums, madeForYouAlbums } from "@/data/albums";
 import { signIn, useSession } from "next-auth/react";
-import React from "react";
-import { getFeaturedPlaylists } from "@/lib/Spotifymethods";
-import { playlists } from '../data/playlists';
-
+import React, { useEffect, useState } from "react";
+import { getCategoryPlaylists, getCategoriesForListenNow } from "@/lib/Spotifymethods";
+import { Category, Playlist } from "spotify-types";
+import {Swiper , SwiperSlide} from 'swiper/react';
+import { Scrollbar } from 'swiper/modules';
 export default function ListenNow() {
+  const { data: session } = useSession();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [playlistsByCategory, setPlaylistsByCategory] = useState<{[key: string]: Playlist[]}>({});
 
-
-const {data:session} = useSession();
-  const [x, setX] = React.useState("");
-  const [Spotifyplaylists, setSpotifyPlaylists] = React.useState<Playlist[]>([])
-
-  React.useEffect(() => {
-    async function fetchData() {
-      if (session && session.accessToken) {
-        try{
-          const items = await getFeaturedPlaylists(session.accessToken);
-          setSpotifyPlaylists(items);
+  useEffect(() => {
+    async function fetchCategoriesAndPlaylists() {
+      if (session?.accessToken) {
+        try {
+          const categories = await getCategoriesForListenNow(session.accessToken);
+          setCategories(categories);
+          categories.forEach(category => {
+            fetchPlaylists(category.id, session.accessToken as string);
+          });
         } catch (error) {
-          console.error('Error fetching playlists:', error);
+          console.error('Error fetching categories:', error);
         }
       }
     }
-  
-    fetchData();
-    console.log(Spotifyplaylists);
+
+    async function fetchPlaylists(categoryId: string, accessToken: string) {
+      try {
+        const playlists = await getCategoryPlaylists(accessToken, categoryId);
+        setPlaylistsByCategory(prev => ({
+          ...prev,
+          [categoryId]: playlists
+        }));
+      } catch (error) {
+        console.error(`Error fetching playlists for category ${categoryId}:`, error);
+      }
+    }
+
+    fetchCategoriesAndPlaylists();
   }, [session]);
 
   return (
@@ -50,67 +61,47 @@ const {data:session} = useSession();
               </TabsTrigger>
             </TabsList>
             <div className="ml-auto mr-4">
-              <Button onClick={()=>signIn('spotify', {callbackUrl: "/"})}>
+              <Button onClick={() => signIn('spotify', {callbackUrl: "/"})}>
                 <PlusCircledIcon className="mr-2 h-4 w-4" />
                 Add music
               </Button>
             </div>
           </div>
           <TabsContent value="music" className="border-none p-0 outline-none overflow-auto">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  Listen Now
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  Top picks for you. Updated daily.
-                </p>
-              </div>
-            </div>
-            <Separator className="my-4" />
-            <div className="relative">
-              <ScrollArea>
-                <div className="flex space-x-4 pb-4">
-                  {Spotifyplaylists?.map((playlist) => (
-                    <AlbumArtwork
-                      key={playlist.id}
-                      playlist={playlist}
-                      className="w-[250px]"
-                      aspectRatio="portrait"
-                      width={250}
-                      height={330}
-                    />
-                  ))}
+            {categories.map(category => (
+              <React.Fragment key={category.id}>
+                <div className="mt-6 space-y-1">
+                  <h2 className="text-2xl font-semibold tracking-tight">
+                    {category.name}
+                  </h2>
                 </div>
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
-            </div>
-            <div className="mt-6 space-y-1">
-              <h2 className="text-2xl font-semibold tracking-tight">
-                Made for You
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                Your personal playlists. Updated daily.
-              </p>
-            </div>
-            <Separator className="my-4" />
-            <div className="relative">
-              <ScrollArea>
-                <div className="flex space-x-4 pb-4">
-                  {Spotifyplaylists.map((playlist) => (
-                    <AlbumArtwork
-                      key={playlist.name}
-                      playlist={playlist}
-                      className="w-[150px]"
-                      aspectRatio="square"
-                      width={150}
-                      height={150}
-                    />
-                  ))}
+                <Separator className="my-4" />
+                <div className="relative">
+                  <Swiper 
+                    modules={[Scrollbar]}
+                    spaceBetween={10}
+                    slidesPerView={"auto"}
+                    freeMode={true}
+                    speed={100}
+                    scrollbar={{ draggable: true, hide: true}}
+                    className="mySwiper"
+                    >
+                      {playlistsByCategory[category.id]?.map(playlist => (
+                        <SwiperSlide key={playlist.id} style={{ width: '250px' }}>
+                            <AlbumArtwork
+                            key={playlist.id}
+                            playlist={playlist}
+                            className="w-[250px] mb-5"
+                            height={330}
+                            width={250}
+                            aspectRatio="portrait"
+                            />
+                        </SwiperSlide>
+                      ))}
+                  </Swiper>
                 </div>
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
-            </div>
+              </React.Fragment>
+            ))}
           </TabsContent>
           <TabsContent
             value="podcasts"
