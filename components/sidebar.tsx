@@ -39,9 +39,10 @@ export function Sidebar({ className, setView, globalPlaylistId, view, setGlobalP
       music = getMusicKitInstance();
       if(music?.isAuthorized){
         try {
-          const data = await music?.api.library.playlists(null, {offset: 100});
+          const data = await music?.api.library.playlists(null, {limit: 100});
           const normalizedPlaylists = data.map(playlist => normalizeSimplifiedPlaylistData("apple", playlist));
           setPlaylists(normalizedPlaylists); 
+          console.log(await music?.api.library.playlists(null, {offset: 24}));
         } catch (error) {
           console.error('Error fetching playlists:', error);
         }
