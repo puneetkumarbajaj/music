@@ -19,7 +19,7 @@
   }
   
   interface Playlist {
-    collaborative: boolean;
+    collaborative?: boolean;
     description: string;
     href: string;
     followers: Followers;
@@ -95,17 +95,17 @@
   }
   
   interface SimplifiedPlaylist {
-    collaborative: boolean;
+    collaborative?: boolean;
     description: string;
     href: string;
     id: string;
     image: ImageObject;
     name: string;
-    owner: Owner;
+    owner?: Owner;
     public: boolean;
-    tracks: { href: string; total: number };
+    tracks?: { href: string; total: number };
     type: string;
-    uri: string;
+    uri?: string;
   }
   
   

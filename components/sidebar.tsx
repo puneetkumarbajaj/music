@@ -35,10 +35,16 @@ export function Sidebar({ className, setView, globalPlaylistId, view, setGlobalP
           console.error('Error fetching playlists:', error);
         }
       }
+      console.log(music?.isAuthorized)
       music = getMusicKitInstance();
       if(music?.isAuthorized){
-        const data = await music?.api.library.playlists(null);
-        console.log(data);
+        try {
+          const data = await music?.api.library.playlists(null, {offset: 100});
+          const normalizedPlaylists = data.map(playlist => normalizeSimplifiedPlaylistData("apple", playlist));
+          setPlaylists(normalizedPlaylists); 
+        } catch (error) {
+          console.error('Error fetching playlists:', error);
+        }
       }
     }
   

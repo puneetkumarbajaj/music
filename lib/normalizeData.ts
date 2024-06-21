@@ -263,20 +263,13 @@ export function normalizeSimplifiedPlaylistData(source: 'spotify' | 'apple', dat
         }
     } else {
         return {
-            collaborative: data.collaborative,
-            description: data.description,
-            href: data.href,
             id: data.id,
-            image: data.images[0],
-            name: data.name,
-            owner: data.owner,
-            public: data.public,
-            tracks: {
-                href: data.tracks.href,
-                total: data.tracks.total
-            },
+            href: data.href,
             type: data.type,
-            uri: data.uri
+            name: data.attributes.name,
+            description: data.attributes.description.standard,
+            image: data.attributes.artwork,
+            public: data.attributes.isPublic
         }
     }
 }
