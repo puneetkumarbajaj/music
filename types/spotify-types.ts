@@ -70,7 +70,6 @@ interface SpotifyArtist {
   genres: string[];
   href: string;
   id: string;
-  images: SpotifyImageObject[];
   name: string;
   popularity: number;
   type: string;
@@ -169,4 +168,27 @@ interface SpotifyCategoryPlaylists {
         total: number;
         items: SpotifyPlaylist[];
     };
+}
+
+
+interface SpotifyRecentlyPlayed {
+  items: SpotifyPlayHistory[];
+  next: string;
+  cursors: {
+    after: string;
+  };
+  limit: number;
+  total: number;
+  href: string;
+}
+
+interface SpotifyPlayHistory {
+  track: SpotifyTrack;
+  played_at: string;
+  context: {
+    external_urls: SpotifyExternalUrls;
+    href: string;
+    type: string;
+    uri: string;
+  };
 }

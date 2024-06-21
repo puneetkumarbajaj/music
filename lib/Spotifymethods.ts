@@ -135,3 +135,13 @@ export async function getCategoriesForListenNow(accessToken: string) : Promise<S
   const data = await res.json();
   return data.categories.items;
 }
+
+export async function getRecentlyPlayed(accessToken: string) {
+    const res = await fetch(`https://api.spotify.com/v1/me/player/recently-played`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    });
+    const data = await res.json();
+    return data;
+}

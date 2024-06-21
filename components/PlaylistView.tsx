@@ -4,15 +4,17 @@ import * as React from "react";
 import { IoIosPlay } from "react-icons/io";
 import { RxDotsHorizontal } from "react-icons/rx";
 import { FiClock } from "react-icons/fi";
+import { normalizePlaylistData } from "@/lib/normalizeData";
 export interface IPlaylistViewProps {
   globalPlaylistId: string | null;
   //globalsetCurrentSongId: (id:string) => void;
   //globalsetIsPlaying: (isPlaying: boolean) => void;
+  service: 'spotify' | 'apple';
 }
 
 export function PlaylistView(props: IPlaylistViewProps) {
   const { data: session } = useSession();
-  const [playlistData, setPlaylistData] = React.useState<SpotifyPlaylist | null>(null);
+  const [playlistData, setPlaylistData] = React.useState<Playlist | null>(null);
   const [bgColor, setBgColor] = React.useState<string>("rgb(0,0,0)");
 
   React.useEffect(() => {
@@ -23,9 +25,10 @@ export function PlaylistView(props: IPlaylistViewProps) {
             session.accessToken as string,
             props.globalPlaylistId as string
           );
-          setPlaylistData(items);
+          const normalizedItems = normalizePlaylistData(props.service, items);
+          setPlaylistData(normalizedItems);
           // Ensure getDominantColor is awaited before proceeding
-          await getDominantColor(items);
+          await getDominantColor(normalizedItems);
           console.log(items);
         } catch (error) {
           console.error("Error fetching playlists:", error);
@@ -33,9 +36,9 @@ export function PlaylistView(props: IPlaylistViewProps) {
       }
     }
 
-    function getDominantColor(playlist: SpotifyPlaylist): Promise<void> {
+    function getDominantColor(playlist: Playlist): Promise<void> {
       return new Promise((resolve, reject) => {
-        const imageUrl = playlist?.images[0]?.url;
+        const imageUrl = playlist?.image?.url;
         if (!imageUrl) {
           reject(new Error("No image URL available"));
           return;
@@ -91,7 +94,7 @@ export function PlaylistView(props: IPlaylistViewProps) {
         
         <div className="flex p-5 gap-7">
           <div className="h-[232px] w-[232px] shadow-2xl shadow-black">
-            <img src={playlistData?.images[0]?.url} alt="playlist" />
+            <img src={playlistData?.image.url} alt="playlist" />
           </div>
           <div className="mt-20">
             <div className="text-xs">Playlist</div>
@@ -102,7 +105,7 @@ export function PlaylistView(props: IPlaylistViewProps) {
               {playlistData?.description}
             </div>
             <div className="text-xs font-semibold mt-5">
-              Created by {playlistData?.owner.display_name}
+              Created by {playlistData?.owner.name}
               {" • " + playlistData?.followers.total} likes
               {" • " +  playlistData?.tracks.total} songs
             </div>
@@ -146,7 +149,7 @@ export function PlaylistView(props: IPlaylistViewProps) {
                 <td className="flex p-2 pt-3">
                   <div className="mr-2">
                     <img
-                      src={track.track?.album.images[0]?.url}
+                      src={track.track?.album.image.url}
                       alt="Track"
                       className="w-10 h-10"
                     />

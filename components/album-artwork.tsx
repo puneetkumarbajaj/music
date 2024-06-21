@@ -14,7 +14,7 @@ import {
 } from "./ui/context-menu";
 
 interface AlbumArtworkProps extends React.HTMLAttributes<HTMLDivElement> {
-  playlist: SpotifyPlaylist;
+  playlist: Playlist | SimplifiedPlaylist;
   aspectRatio?: "portrait" | "square";
   width?: number;
   height?: number;
@@ -34,7 +34,7 @@ export function AlbumArtwork({
         <ContextMenuTrigger>
           <div className="overflow-hidden rounded-md">
             <Image
-              src={playlist.images[0].url}
+              src={playlist.image.url}
               alt={playlist.name}
               width={width}
               height={height}
@@ -85,7 +85,7 @@ export function AlbumArtwork({
       </ContextMenu>
       <div className="space-y-1 text-sm">
         <h3 className="font-medium leading-none">{playlist.name}</h3>
-        <p className="text-xs text-muted-foreground">{playlist.owner.display_name}</p>
+        <p className="text-xs text-muted-foreground">{playlist.owner.name}</p>
       </div>
     </div>
   );

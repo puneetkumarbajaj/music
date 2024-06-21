@@ -10,7 +10,7 @@ export default function MusicPage() {
   const [globalPlaylistId, setGlobalPlaylistId] = React.useState<string | null>(null);
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [activeSong, setActiveSong] = React.useState<string | null>(null);
-
+  const [service, setService] = React.useState<"spotify" | "apple">("spotify");
 
   return (
     <>
@@ -33,8 +33,8 @@ export default function MusicPage() {
               />
               </div>
               <div className="col-span-4 overflow-auto">
-                {view === "listen-now" && <ListenNow setGlobalPlaylistId={setGlobalPlaylistId} setView = {setView} />}
-                {view === "playlist" && <PlaylistView globalPlaylistId={globalPlaylistId} />}
+                {view === "listen-now" && <ListenNow setGlobalPlaylistId={setGlobalPlaylistId} setView = {setView} service={service} />}
+                {view === "playlist" && <PlaylistView globalPlaylistId={globalPlaylistId} service={service} />}
               </div>
             </div>
           </div>

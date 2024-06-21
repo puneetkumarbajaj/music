@@ -7,28 +7,36 @@ import { AlbumArtwork } from "./album-artwork";
 import { PodcastEmptyPlaceholder } from "./podcast-empty-placeholder";
 import { signIn, useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
-import { getCategoryPlaylists, getCategoriesForListenNow } from "@/lib/Spotifymethods";
+import { getCategoryPlaylists, getCategoriesForListenNow, getRecentlyPlayed } from "@/lib/Spotifymethods";
 import {Swiper , SwiperSlide} from 'swiper/react';
 import { Scrollbar } from 'swiper/modules';
+import { SongCard } from "./song-card";
+import { normalizeRecentlyPlayedData, normalizeCategoryData, normalizeSimplifiedPlaylistData } from "@/lib/normalizeData";
 
 export interface ListenNowProps {
     setGlobalPlaylistId: (id: string | null) => void;
     setView: (view: string) => void;
+    service : 'spotify' | 'apple';
 }
 
 
 export default function ListenNow(props: ListenNowProps) {
   const { data: session } = useSession();
-  const [categories, setCategories] = useState<SpotifyCategory[]>([]);
-  const [playlistsByCategory, setPlaylistsByCategory] = useState<{[key: string]: SpotifyPlaylist[]}>({});
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [playlistsByCategory, setPlaylistsByCategory] = useState<{[key: string]: SimplifiedPlaylist[]}>({});
+  const [recentlyPlayed, setRecentlyPlayed] = useState<RecentlyPlayed>();
 
   useEffect(() => {
     async function fetchCategoriesAndPlaylists() {
       if (session?.accessToken) {
         try {
+          const recentlyPlayed = await getRecentlyPlayed(session.accessToken);
+          const normalizedRecentlyPlayed = normalizeRecentlyPlayedData(props.service, recentlyPlayed);
+          setRecentlyPlayed(normalizedRecentlyPlayed);
           const categories = await getCategoriesForListenNow(session.accessToken);
-          setCategories(categories);
-          categories.forEach(category => {
+          const normalizedCategories = categories.map(category => normalizeCategoryData(props.service, category));
+          setCategories(normalizedCategories);
+          normalizedCategories.forEach(category => {
             fetchPlaylists(category.id, session.accessToken as string);
           });
         } catch (error) {
@@ -40,15 +48,15 @@ export default function ListenNow(props: ListenNowProps) {
     async function fetchPlaylists(categoryId: string, accessToken: string) {
       try {
         const playlists = await getCategoryPlaylists(accessToken, categoryId);
-        setPlaylistsByCategory(prev => ({
-          ...prev,
-          [categoryId]: playlists
-        }));
+        const normalizedPlaylists = playlists.map(playlist => normalizeSimplifiedPlaylistData(props.service, playlist));
+          setPlaylistsByCategory(prev => ({
+            ...prev,
+            [categoryId]: normalizedPlaylists
+          }));
       } catch (error) {
         console.error(`Error fetching playlists for category ${categoryId}:`, error);
       }
     }
-
     fetchCategoriesAndPlaylists();
   }, [session]);
 
@@ -74,6 +82,19 @@ export default function ListenNow(props: ListenNowProps) {
             </div>
           </div>
           <TabsContent value="music" className="border-none p-0 outline-none overflow-auto">
+            <div>
+              <div className="mt-6 space-y-1">
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  Recently Played
+                </h2>
+              </div>
+              <Separator className="my-4" />
+              <div className="relative grid grid-cols-2 lg:grid-cols-4 gap-4">
+                {recentlyPlayed?.items.slice(0, 8).map((playHistory, index) => (
+                    <SongCard key={index} track={playHistory.track} />
+                ))}
+              </div>
+            </div>
             {categories.map(category => (
               <React.Fragment key={category.id}>
                 <div className="mt-6 space-y-1">
