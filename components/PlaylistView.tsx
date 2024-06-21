@@ -44,8 +44,8 @@ export function PlaylistView(props: IPlaylistViewProps) {
           if (music?.isAuthorized) {
             try {
               const data = await music?.api.library.playlist(props.globalPlaylistId as string);
-              //const normalizedPlaylists = normalizePlaylistData("apple", data);
-              //setPlaylistData(normalizedPlaylists);
+              const normalizedPlaylists = normalizePlaylistData("apple", data);
+              setPlaylistData(normalizedPlaylists);
               console.log(data);
             } catch (error) {
               console.error("Error fetching playlists:", error);
