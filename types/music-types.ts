@@ -80,7 +80,8 @@
       total_tracks?: number;
       uri?: string;
     };
-    artists: Artist[];
+    artists?: Artist[];
+    artist? : string;
     available_markets?: string[];
     duration_ms: number;
     explicit: boolean;

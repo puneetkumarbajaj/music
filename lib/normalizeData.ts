@@ -33,7 +33,7 @@ export function normalizeTrackData(source: 'spotify' | 'apple', data: any): Trac
                 image: data.attributes.artwork,
                 release_date: data.attributes.releaseDate,
             },
-            artists: data.attributes.artistName.map((artist: any) => normalizeArtistData('apple', artist)),
+            artist: data.attributes.artistName,
             duration_ms: data.attributes.durationInMillis,
             explicit: data.attributes.contentRating === 'explicit',
             href: data.href,
