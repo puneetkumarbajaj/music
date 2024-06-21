@@ -28,20 +28,21 @@ export function normalizeTrackData(source: 'spotify' | 'apple', data: any): Trac
         }
     } else {
         return {
-            album: data.album,
-            artists: data.artists,
-            available_markets: data.available_markets,
-            duration_ms: data.duration_ms,
-            explicit: data.explicit,
+            album: {
+                name: data.attributes.albumName,
+                image: data.attributes.artwork,
+                release_date: data.attributes.releaseDate,
+            },
+            artists: data.attributes.artistName.map((artist: any) => normalizeArtistData('apple', artist)),
+            duration_ms: data.attributes.durationInMillis,
+            explicit: data.attributes.contentRating === 'explicit',
             href: data.href,
-            isrc: data.external_ids.isrc,
             id: data.id,
-            is_playable: data.is_playable,
-            name: data.name,
-            popularity: data.popularity,
-            preview_url: data.preview_url,
-            track_number: data.track_number,
-            uri: data.uri
+            name: data.attributes.name,
+            track_number: data.attributes.trackNumber,
+            hasLyrics: data.attributes.hasLyrics,
+            hasCredits: data.attributes.hasCredits,
+            genres: data.attributes.genreNames,
         }
     }
 }
@@ -146,37 +147,27 @@ export function normalizePlaylistData(source: 'spotify' | 'apple', PlaylistData:
                 total: PlaylistData.tracks.total,
                 items: normalizedTracks
             },
-            uri: PlaylistData.uri
+            uri: PlaylistData.uri,
+            type: PlaylistData.type
         }
     } else {
         const normalizedTracks = PlaylistData.tracks.items.map((item: any) => ({
-            added_at: item.added_at,
-            added_by: {
-                followers: item.added_by.followers,
-                href: item.added_by.href,
-                id: item.added_by.id,
-                type: item.added_by.type,
-                uri: item.added_by.uri
-            },
-            track: normalizeTrackData('spotify', item.track)
+            track: normalizeTrackData('apple', item.track)
         }));
 
         return{
-            collaborative: PlaylistData.collaborative,
-            description: PlaylistData.description,
-            href: PlaylistData.href,
-            followers: PlaylistData.followers,
             id: PlaylistData.id,
-            image: PlaylistData.images[0],
-            name: PlaylistData.name,
-            owner: PlaylistData.owner,
-            public: PlaylistData.public,
+            href: PlaylistData.href,
+            type: PlaylistData.type,
+            image: PlaylistData.attributes.artwork,
+            description: PlaylistData.attributes.description?.standard,
+            public: PlaylistData.attributes.isPublic,
+            name: PlaylistData.attributes.name,
             tracks: {
-                href: PlaylistData.tracks.href,
-                total: PlaylistData.tracks.total,
+                total: PlaylistData.relationships.tracks.meta.total,
+                href: PlaylistData.relationships.tracks.href,
                 items: normalizedTracks
-            },
-            uri: PlaylistData.uri
+            }
         }
     }
 }

@@ -22,19 +22,19 @@
     collaborative?: boolean;
     description: string;
     href: string;
-    followers: Followers;
+    followers?: Followers;
     id: string;
     image: ImageObject;
     name: string;
-    owner: Owner;
+    owner?: Owner;
     public: boolean;
     tracks: {
-      href: string;
+      href?: string;
       total: number;
       items: [
         {
-          added_at: string;
-          added_by: {
+          added_at?: string;
+          added_by?: {
             followers: Followers;
             href: string;
             id: string;
@@ -45,7 +45,8 @@
         }
       ];
     };
-    uri: string;
+    uri?: string;
+    type: string;
   }
   
   
@@ -69,29 +70,32 @@
   
   interface Track {
     album: {
-      album_type: string;
-      artists: SimplifiedArtist[];
-      href: string;
-      id: string;
+      album_type?: string;
+      artists?: SimplifiedArtist[];
+      href?: string;
+      id?: string;
       image: ImageObject;
       name: string;
       release_date: string;
-      total_tracks: number;
-      uri: string;
+      total_tracks?: number;
+      uri?: string;
     };
     artists: Artist[];
-    available_markets: string[];
+    available_markets?: string[];
     duration_ms: number;
     explicit: boolean;
-    isrc: string;
+    isrc?: string;
     href: string;
     id: string;
-    is_playable: boolean;
+    is_playable?: boolean;
     name: string;
-    popularity: number;
-    preview_url: string;
+    popularity?: number;
+    preview_url?: string;
     track_number: number;
-    uri: string;
+    uri?: string;
+    hasLyrics?: boolean;
+    hasCredits?: boolean;
+    genres?: string[];
   }
   
   interface SimplifiedPlaylist {

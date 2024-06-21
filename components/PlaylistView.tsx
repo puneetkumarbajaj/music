@@ -122,9 +122,15 @@ export function PlaylistView(props: IPlaylistViewProps) {
               {playlistData?.description}
             </div>
             <div className="text-xs font-semibold mt-5">
-              Created by {playlistData?.owner.name}
-              {" • " + playlistData?.followers.total} likes
-              {" • " +  playlistData?.tracks.total} songs
+              {props.service === 'apple' ? (
+                <span>{playlistData?.tracks.total} songs</span>
+              ) : (
+                <>
+                  Created by {playlistData?.owner?.name}
+                  {" • " + playlistData?.followers?.total} likes
+                  {" • " + playlistData?.tracks.total} songs
+                </>
+              )}
             </div>
           </div>
         </div>

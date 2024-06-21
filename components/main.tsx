@@ -10,7 +10,7 @@ export default function MusicPage() {
   const [globalPlaylistId, setGlobalPlaylistId] = React.useState<string | null>(null);
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [activeSong, setActiveSong] = React.useState<string | null>(null);
-  const [service, setService] = React.useState<"spotify" | "apple">("spotify");
+  const [service, setService] = React.useState<"spotify" | "apple">("apple");
 
   return (
     <>
