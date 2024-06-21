@@ -5,27 +5,29 @@ import { useSession } from "next-auth/react"
 import { Icons } from "./icons"
 import React from "react"
 import { fetchPlaylists } from "@/lib/Spotifymethods"
-import { Playlist } from "spotify-types"
+import { normalizeSimplifiedPlaylistData } from "@/lib/normalizeData"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   view: string;
   setView: (view: string) => void;
   setGlobalPlaylistId: (id: string | null) => void;
   globalPlaylistId: string | null;
+  service : 'spotify' | 'apple';
 }
 
 export function Sidebar({ className, setView, globalPlaylistId, view, setGlobalPlaylistId }: SidebarProps) {
 
   const {data:session} = useSession();
   const [x, setX] = React.useState("");
-  const [Spotifyplaylists, setSpotifyPlaylists] = React.useState<Playlist[]>([])
+  const [playlists, setPlaylists] = React.useState<SimplifiedPlaylist[]>([])
 
   React.useEffect(() => {
     async function fetchData() {
       if (session && session.accessToken) {
         try{
           const items = await fetchPlaylists(session.accessToken, session.user?.id as string);
-          setSpotifyPlaylists(items);
+          const normalizedPlaylists = items.map(playlist => normalizeSimplifiedPlaylistData("spotify", playlist));
+          setPlaylists(normalizedPlaylists);
         } catch (error) {
           console.error('Error fetching playlists:', error);
         }
@@ -91,7 +93,7 @@ export function Sidebar({ className, setView, globalPlaylistId, view, setGlobalP
           </h2>
           <ScrollArea className="h-[300px] px-1">
             <div className="space-y-1 p-2">
-              {Spotifyplaylists?.map((playlist, i) => (
+              {playlists?.map((playlist, i) => (
                 <Button
                   key={`${playlist}-${i}`}
                   variant={view==="playlist" && globalPlaylistId ===playlist.id ? "secondary" : "ghost"}

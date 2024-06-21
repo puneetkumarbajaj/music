@@ -30,6 +30,7 @@ export default function MusicPage() {
                 className="hidden lg:block sticky top-10 overflow-auto" 
                 setGlobalPlaylistId={setGlobalPlaylistId}
                 globalPlaylistId = {globalPlaylistId}
+                service={service}
               />
               </div>
               <div className="col-span-4 overflow-auto">

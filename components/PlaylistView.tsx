@@ -139,7 +139,7 @@ export function PlaylistView(props: IPlaylistViewProps) {
             {playlistData?.tracks.items.map((track, index) => (
               <tr
                 key={index}
-                className="hover:bg-neutral-800"
+                className="hover:bg-secondary"
                 onClick={() => {
                   //props.globalsetCurrentSongId(track.track?.id || "")
                   //props.globalsetIsPlaying(true)
