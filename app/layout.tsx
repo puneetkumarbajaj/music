@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Providers } from "@/components/providers";
 import { Menu } from "@/components/menu";
 import SessionWrapper from "@/components/SessionWrapper";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans",});
 
@@ -21,6 +22,7 @@ export default function RootLayout({
   return (
     <SessionWrapper>
       <html lang="en">
+       <Script src="https://js-cdn.music.apple.com/musickit/v1/musickit.js" strategy="beforeInteractive"></Script>
         <body 
           className={cn("min-h-screen bg-background font-sans antialiased", 
           inter.variable

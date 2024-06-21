@@ -57,7 +57,7 @@ async function refreshAccessToken(token: any) {
 const handler = NextAuth({
     providers: [
     SpotifyProvider({
-        clientId: process.env.SPOTIFY_CLIENT_ID || "",
+        clientId: process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID || "",
         clientSecret: process.env.SPOTIFY_CLIENT_SECRET || "",
         authorization: LOGIN_URL || "",
 

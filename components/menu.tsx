@@ -1,3 +1,5 @@
+"use client";
+import React from "react";
 import {
   Menubar,
   MenubarCheckboxItem,
@@ -14,8 +16,34 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from "./ui/menubar"
+import { authorizeMusicKit, getMusicKitInstance, initializeMusicKit } from "@/lib/musickitMethods";
 
 export function Menu() {
+
+
+  const [isInitialized, setIsInitialized] = React.useState(false);
+
+  React.useEffect(() => {
+    const developerToken: string = process.env.NEXT_PUBLIC_APPLE_SECRET?.toString() || "";
+    initializeMusicKit(developerToken)
+      .then(() => setIsInitialized(true))
+      .catch((error) => console.error(error));
+  }, []);
+
+  const handleAuthorize = async () => {
+    if (isInitialized) {
+      await authorizeMusicKit();
+      const musicInstance = getMusicKitInstance();
+      if (musicInstance?.isAuthorized) {
+        console.log('User is authorized');
+      } else {
+        console.log('User is not authorized');
+      }
+    } else {
+      console.log('MusicKit is not initialized. error from login-with.tsx: handleAuthorize()');
+    }
+  }
+
   return (
     <Menubar className="rounded-none border-b border-none px-2 lg:px-4 z-10 sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <MenubarMenu>
@@ -194,6 +222,9 @@ export function Menu() {
           <MenubarSeparator />
           <MenubarItem inset>Add Account...</MenubarItem>
         </MenubarContent>
+      </MenubarMenu>
+      <MenubarMenu>
+        <MenubarTrigger onClick={handleAuthorize}>LoginAppleMusic</MenubarTrigger>
       </MenubarMenu>
     </Menubar>
   )

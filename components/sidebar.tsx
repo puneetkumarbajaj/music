@@ -6,6 +6,7 @@ import { Icons } from "./icons"
 import React from "react"
 import { fetchPlaylists } from "@/lib/Spotifymethods"
 import { normalizeSimplifiedPlaylistData } from "@/lib/normalizeData"
+import { getMusicKitInstance } from "@/lib/musickitMethods"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   view: string;
@@ -21,6 +22,8 @@ export function Sidebar({ className, setView, globalPlaylistId, view, setGlobalP
   const [x, setX] = React.useState("");
   const [playlists, setPlaylists] = React.useState<SimplifiedPlaylist[]>([])
 
+  let music: MusicKit.MusicKitInstance | null;
+
   React.useEffect(() => {
     async function fetchData() {
       if (session && session.accessToken) {
@@ -31,6 +34,11 @@ export function Sidebar({ className, setView, globalPlaylistId, view, setGlobalP
         } catch (error) {
           console.error('Error fetching playlists:', error);
         }
+      }
+      music = getMusicKitInstance();
+      if(music?.isAuthorized){
+        const data = await music?.api.library.playlists(null);
+        console.log(data);
       }
     }
   
