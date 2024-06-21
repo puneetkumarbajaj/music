@@ -5,6 +5,7 @@ import { IoIosPlay } from "react-icons/io";
 import { RxDotsHorizontal } from "react-icons/rx";
 import { FiClock } from "react-icons/fi";
 import { normalizePlaylistData } from "@/lib/normalizeData";
+import { getMusicKitInstance } from "@/lib/musickitMethods";
 export interface IPlaylistViewProps {
   globalPlaylistId: string | null;
   //globalsetCurrentSongId: (id:string) => void;
@@ -16,6 +17,8 @@ export function PlaylistView(props: IPlaylistViewProps) {
   const { data: session } = useSession();
   const [playlistData, setPlaylistData] = React.useState<Playlist | null>(null);
   const [bgColor, setBgColor] = React.useState<string>("rgb(0,0,0)");
+
+  let music: MusicKit.MusicKitInstance | null;
 
   React.useEffect(() => {
     async function fetchPlaylist() {
@@ -30,10 +33,24 @@ export function PlaylistView(props: IPlaylistViewProps) {
           // Ensure getDominantColor is awaited before proceeding
           await getDominantColor(normalizedItems);
           console.log(items);
+
+
         } catch (error) {
           console.error("Error fetching playlists:", error);
         }
       }
+
+      music = getMusicKitInstance();
+          if (music?.isAuthorized) {
+            try {
+              const data = await music?.api.library.playlists(null, { limit: 100 });
+              //const normalizedPlaylists = normalizePlaylistData("apple", data);
+              //setPlaylistData(normalizedPlaylists);
+              console.log(data);
+            } catch (error) {
+              console.error("Error fetching playlists:", error);
+            }
+          }
     }
 
     function getDominantColor(playlist: Playlist): Promise<void> {
