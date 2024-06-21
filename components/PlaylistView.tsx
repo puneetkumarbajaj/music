@@ -180,12 +180,16 @@ export function PlaylistView(props: IPlaylistViewProps) {
                   <div className="flex flex-col justify-center">
                     {track.track?.name}
                     <div className="flex flex-wrap">
-                      {track.track?.artists.map((artist, index) => (
-                        <span key={index} className="text-xs text-muted-foreground">
-                          {artist.name}
-                          {index < track.track!.artists.length - 1 ? ", " : ""}
-                        </span>
-                      ))}
+                      {Array.isArray(track.track?.artists) ? (
+                        track.track?.artists.map((artist, index) => (
+                          <span key={index} className="text-xs text-muted-foreground">
+                            {artist.name}
+                            {index < track.track.artists!.length - 1 ? ", " : ""}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-xs text-muted-foreground">{track.track?.artists}</span>
+                      )}
                     </div>
                   </div>
                 </td>

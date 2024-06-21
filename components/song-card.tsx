@@ -30,11 +30,15 @@ export const SongCard: React.FC<SongCardProps> = ({ track }) => {
                 {explicit && <span className="text-xs bg-secondary px-1 ml-2 rounded">E</span>}
             </div>
             <p className="text-xs text-muted-foreground truncate">
-                {artists.map((artist, index) => (
+                {Array.isArray(artists) ? (
+                    artists.map((artist, index) => (
                     <span key={index}>
                         {artist.name}{index < artists.length - 1 ? ', ' : ''}
                     </span>
-                ))}
+                    ))
+                ) : (
+                    <span>{artists}</span>
+                )}
             </p>
         </div>
         <DropdownMenu>
