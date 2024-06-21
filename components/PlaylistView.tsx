@@ -43,7 +43,7 @@ export function PlaylistView(props: IPlaylistViewProps) {
       music = getMusicKitInstance();
           if (music?.isAuthorized) {
             try {
-              const data = await music?.api.library.playlists(null, { limit: 100 });
+              const data = await music?.api.library.playlist(props.globalPlaylistId as string);
               //const normalizedPlaylists = normalizePlaylistData("apple", data);
               //setPlaylistData(normalizedPlaylists);
               console.log(data);
