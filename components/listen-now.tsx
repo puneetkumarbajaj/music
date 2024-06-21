@@ -8,13 +8,19 @@ import { PodcastEmptyPlaceholder } from "./podcast-empty-placeholder";
 import { signIn, useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { getCategoryPlaylists, getCategoriesForListenNow } from "@/lib/Spotifymethods";
-import { Category, Playlist } from "spotify-types";
 import {Swiper , SwiperSlide} from 'swiper/react';
 import { Scrollbar } from 'swiper/modules';
-export default function ListenNow() {
+
+export interface ListenNowProps {
+    setGlobalPlaylistId: (id: string | null) => void;
+    setView: (view: string) => void;
+}
+
+
+export default function ListenNow(props: ListenNowProps) {
   const { data: session } = useSession();
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [playlistsByCategory, setPlaylistsByCategory] = useState<{[key: string]: Playlist[]}>({});
+  const [categories, setCategories] = useState<SpotifyCategory[]>([]);
+  const [playlistsByCategory, setPlaylistsByCategory] = useState<{[key: string]: SpotifyPlaylist[]}>({});
 
   useEffect(() => {
     async function fetchCategoriesAndPlaylists() {
@@ -87,14 +93,14 @@ export default function ListenNow() {
                     className="mySwiper"
                     >
                       {playlistsByCategory[category.id]?.map(playlist => (
-                        <SwiperSlide key={playlist.id} style={{ width: '250px' }}>
+                        <SwiperSlide key={playlist.id} style={{ width: '250px'}} onClick={()=> {props.setGlobalPlaylistId(playlist.id); props.setView('playlist')}}>
                             <AlbumArtwork
                             key={playlist.id}
                             playlist={playlist}
                             className="w-[250px] mb-5"
                             height={330}
                             width={250}
-                            aspectRatio="portrait"
+                            aspectRatio="square"
                             />
                         </SwiperSlide>
                       ))}

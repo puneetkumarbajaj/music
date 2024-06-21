@@ -2,11 +2,15 @@
 import { Sidebar } from "./sidebar"
 import ListenNow from "./listen-now"
 import React from "react"
+import { PlaylistView } from "./PlaylistView";
 
 export default function MusicPage() {
 
   const [view, setView] = React.useState("listen-now");
   const [globalPlaylistId, setGlobalPlaylistId] = React.useState<string | null>(null);
+  const [isPlaying, setIsPlaying] = React.useState(false);
+  const [activeSong, setActiveSong] = React.useState<string | null>(null);
+
 
   return (
     <>
@@ -29,9 +33,8 @@ export default function MusicPage() {
               />
               </div>
               <div className="col-span-4 overflow-auto">
-                {
-                  view === "listen-now" && <ListenNow />
-                }
+                {view === "listen-now" && <ListenNow setGlobalPlaylistId={setGlobalPlaylistId} setView = {setView} />}
+                {view === "playlist" && <PlaylistView globalPlaylistId={globalPlaylistId} />}
               </div>
             </div>
           </div>

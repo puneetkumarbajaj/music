@@ -1,6 +1,4 @@
-import { Category, Playlist, Track } from 'spotify-types';
-
-export async function fetchPlaylists(accessToken: string, userId: string): Promise<Playlist[]> {
+export async function fetchPlaylists(accessToken: string, userId: string): Promise<SpotifyPlaylist[]> {
     try {
       const response = await fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
         headers: {
@@ -18,7 +16,7 @@ export async function fetchPlaylists(accessToken: string, userId: string): Promi
     }
 }
 
-export async function fetchPlaylistData(accessToken: string, playlistId: string): Promise<Playlist> {
+export async function fetchPlaylistData(accessToken: string, playlistId: string): Promise<SpotifyPlaylist> {
     try {
       const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}`, {
         headers: {
@@ -36,7 +34,7 @@ export async function fetchPlaylistData(accessToken: string, playlistId: string)
     }
 }
 
-export async function fetchSongData(accessToken: string, trackId: string): Promise<Track> {
+export async function fetchSongData(accessToken: string, trackId: string): Promise<SpotifyTrack> {
     try{
         const res = await fetch(`https://api.spotify.com/v1/tracks/${trackId}`, {
             headers: {
@@ -97,7 +95,7 @@ export async function getIsrcOfPlaylist(accessToken: string, playlistId: string)
     return data.tracks.items.map((item: any) => item.track.external_ids.isrc);
 }
 
-export async function getFeaturedPlaylists(accessToken: string) :  Promise<Playlist[]>{
+export async function getFeaturedPlaylists(accessToken: string) :  Promise<SpotifyPlaylist[]>{
     const res = await fetch(`https://api.spotify.com/v1/browse/featured-playlists`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
@@ -108,7 +106,7 @@ export async function getFeaturedPlaylists(accessToken: string) :  Promise<Playl
 }
 
 
-export async function getCategories(accessToken: string) : Promise<Category[]> {
+export async function getCategories(accessToken: string) : Promise<SpotifyCategory[]> {
     const res = await fetch(`https://api.spotify.com/v1/browse/categories`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
@@ -118,7 +116,7 @@ export async function getCategories(accessToken: string) : Promise<Category[]> {
     return data.categories.items;
 }
 
-export async function getCategoryPlaylists(accessToken: string, categoryId: string) : Promise<Playlist[]> {
+export async function getCategoryPlaylists(accessToken: string, categoryId: string) : Promise<SpotifyPlaylist[]> {
     const res = await fetch(`https://api.spotify.com/v1/browse/categories/${categoryId}/playlists`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
@@ -128,7 +126,7 @@ export async function getCategoryPlaylists(accessToken: string, categoryId: stri
     return data.playlists.items;
 }
 
-export async function getCategoriesForListenNow(accessToken: string) : Promise<Category[]> {
+export async function getCategoriesForListenNow(accessToken: string) : Promise<SpotifyCategory[]> {
   const res = await fetch(`https://api.spotify.com/v1/browse/categories?limit=5`, {
     headers: {
       Authorization: `Bearer ${accessToken}`

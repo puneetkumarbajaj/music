@@ -12,10 +12,9 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "./ui/context-menu";
-import { Playlist } from "spotify-types";
 
 interface AlbumArtworkProps extends React.HTMLAttributes<HTMLDivElement> {
-  playlist: Playlist;
+  playlist: SpotifyPlaylist;
   aspectRatio?: "portrait" | "square";
   width?: number;
   height?: number;
@@ -23,7 +22,7 @@ interface AlbumArtworkProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export function AlbumArtwork({
   playlist,
-  aspectRatio = "portrait",
+  aspectRatio = "square",
   width,
   height,
   className,
