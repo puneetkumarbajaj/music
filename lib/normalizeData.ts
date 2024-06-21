@@ -267,7 +267,7 @@ export function normalizeSimplifiedPlaylistData(source: 'spotify' | 'apple', dat
             href: data.href,
             type: data.type,
             name: data.attributes.name,
-            description: data.attributes.description.standard,
+            description: data.attributes.description?.standard,
             image: data.attributes.artwork,
             public: data.attributes.isPublic
         }
