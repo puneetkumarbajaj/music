@@ -172,7 +172,7 @@ export function PlaylistView(props: IPlaylistViewProps) {
                 <td className="flex p-2 pt-3">
                   <div className="mr-2">
                     <img
-                      src={track.track?.album.image.url}
+                      src={track.track?.album?.image?.url}
                       alt="Track"
                       className="w-10 h-10"
                     />
