@@ -12,6 +12,7 @@ import {Swiper , SwiperSlide} from 'swiper/react';
 import { Scrollbar } from 'swiper/modules';
 import { SongCard } from "./song-card";
 import { normalizeRecentlyPlayedData, normalizeCategoryData, normalizeSimplifiedPlaylistData } from "@/lib/normalizeData";
+import { getMusicKitInstance } from "@/lib/musickitMethods";
 
 export interface ListenNowProps {
     setGlobalPlaylistId: (id: string | null) => void;
@@ -26,7 +27,10 @@ export default function ListenNow(props: ListenNowProps) {
   const [playlistsByCategory, setPlaylistsByCategory] = useState<{[key: string]: SimplifiedPlaylist[]}>({});
   const [recentlyPlayed, setRecentlyPlayed] = useState<RecentlyPlayed>();
 
+  let music: MusicKit.MusicKitInstance | null; 
+
   useEffect(() => {
+    music = getMusicKitInstance();
     async function fetchCategoriesAndPlaylists() {
       if (session?.accessToken) {
         try {
@@ -43,6 +47,33 @@ export default function ListenNow(props: ListenNowProps) {
           console.error('Error fetching categories:', error);
         }
       }
+
+      if(music?.isAuthorized){
+        try {
+          const data = await music?.api.recentPlayed();
+          console.log(data);
+          const categories = await fetch("/api/apple/recommendations", {
+            method: "POST",
+            headers: {
+              token: music.musicUserToken as string,
+            },
+          }).then(res => res.json());
+          console.log(categories)
+          if (categories && categories.data)
+            {const normalizedCategories = categories.data.map((category:any) => normalizeCategoryData("apple", category));
+            console.log(normalizedCategories)
+            setCategories(normalizedCategories);
+            normalizedCategories.forEach((category: any)=> {
+              setPlaylistsByCategory(prev => ({
+                ...prev,
+                [category.id]: category.playlists 
+              }));
+            });}
+        } catch (error) {
+          console.error('Error fetching categories:', error);
+        }
+      }
+
     }
 
     async function fetchPlaylists(categoryId: string, accessToken: string) {
@@ -119,9 +150,10 @@ export default function ListenNow(props: ListenNowProps) {
                             key={playlist.id}
                             playlist={playlist}
                             className="w-[250px] mb-5"
-                            height={330}
+                            height={250}
                             width={250}
                             aspectRatio="square"
+                            service={props.service}
                             />
                         </SwiperSlide>
                       ))}

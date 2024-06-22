@@ -18,6 +18,7 @@ interface AlbumArtworkProps extends React.HTMLAttributes<HTMLDivElement> {
   aspectRatio?: "portrait" | "square";
   width?: number;
   height?: number;
+  service: 'spotify' | 'apple';
 }
 
 export function AlbumArtwork({
@@ -33,8 +34,10 @@ export function AlbumArtwork({
       <ContextMenu>
         <ContextMenuTrigger>
           <div className="overflow-hidden rounded-md">
-            <Image
-              src={playlist.image.url}
+            {props.service === 'apple'? 
+            (
+              <Image
+              src={MusicKit.formatArtworkURL(playlist.artwork!, height!, width!)}
               alt={playlist.name}
               width={width}
               height={height}
@@ -42,7 +45,17 @@ export function AlbumArtwork({
                 "h-auto w-auto object-cover transition-all hover:scale-105",
                 aspectRatio === "portrait" ? "aspect-[3/4]" : "aspect-square"
               )}
-            />
+            />)
+            : (<Image
+              src={playlist.image?.url || ""}
+              alt={playlist.name}
+              width={width}
+              height={height}
+              className={cn(
+                "h-auto w-auto object-cover transition-all hover:scale-105",
+                aspectRatio === "portrait" ? "aspect-[3/4]" : "aspect-square"
+              )}
+            />)}
           </div>
         </ContextMenuTrigger>
         <ContextMenuContent className="w-40">

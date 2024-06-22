@@ -1,4 +1,3 @@
-"use client";
 import { fetchPlaylistData } from "@/lib/Spotifymethods";
 import { useSession } from "next-auth/react";
 import * as React from "react";
@@ -112,7 +111,7 @@ export function PlaylistView(props: IPlaylistViewProps) {
         
         <div className="flex p-5 gap-7">
           <div className="h-[232px] w-[232px] shadow-2xl shadow-black">
-            <img src={playlistData?.image.url} alt="playlist" />
+            <img src={playlistData?.image?.url} alt="playlist" />
           </div>
           <div className="mt-20">
             <div className="text-xs">Playlist</div>

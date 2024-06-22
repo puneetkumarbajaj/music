@@ -183,9 +183,9 @@ export function normalizeCategoryData(source: 'spotify' | 'apple', data: any): C
     } else {
         return {
             href: data.href,
-            icons: data.icons,
             id: data.id,
-            name: data.name
+            name: data.attributes.title.stringForDisplay,
+            playlists: data.relationships.contents.data.map((item: any) => normalizeSimplifiedPlaylistData('apple', item))
         }
     }
 }
@@ -259,8 +259,9 @@ export function normalizeSimplifiedPlaylistData(source: 'spotify' | 'apple', dat
             type: data.type,
             name: data.attributes.name,
             description: data.attributes.description?.standard,
-            image: data.attributes.artwork,
-            public: data.attributes.isPublic
+            artwork: data.attributes.artwork,
+            public: data.attributes.isPublic,
+            uri: data.attributes.url
         }
     }
 }

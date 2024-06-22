@@ -24,7 +24,8 @@
     href: string;
     followers?: Followers;
     id: string;
-    image: ImageObject;
+    image?: ImageObject;
+    artwork?: MusicKit.Artwork;
     name: string;
     owner?: Owner;
     public: boolean;
@@ -104,7 +105,8 @@
     description: string;
     href: string;
     id: string;
-    image: ImageObject;
+    image?: ImageObject;
+    artwork?: MusicKit.Artwork; 
     name: string;
     owner?: Owner;
     public: boolean;
@@ -113,13 +115,12 @@
     uri?: string;
   }
   
-  
-  
   interface Category {
     href: string;
-    icons: ImageObject;
+    icons?: ImageObject;
     id: string;
     name: string;
+    playlists?: SimplifiedPlaylist[];
   }
   
   interface CategoryPlaylists {
