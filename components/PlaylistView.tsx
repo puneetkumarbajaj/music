@@ -21,6 +21,7 @@ export function PlaylistView(props: IPlaylistViewProps) {
   let music: MusicKit.MusicKitInstance | null;
 
   React.useEffect(() => {
+    music = getMusicKitInstance();
     async function fetchPlaylist() {
       if (session && props.globalPlaylistId) {
         try {
@@ -40,7 +41,6 @@ export function PlaylistView(props: IPlaylistViewProps) {
         }
       }
 
-      music = getMusicKitInstance();
           if (music?.isAuthorized) {
             try {
               const data = await music?.api.library.playlist(props.globalPlaylistId as string);
@@ -123,12 +123,12 @@ export function PlaylistView(props: IPlaylistViewProps) {
             </div>
             <div className="text-xs font-semibold mt-5">
               {props.service === 'apple' ? (
-                <span>{playlistData?.tracks.total} songs</span>
+                <span>{playlistData?.tracks?.total} songs</span>
               ) : (
                 <>
                   Created by {playlistData?.owner?.name}
                   {" • " + playlistData?.followers?.total} likes
-                  {" • " + playlistData?.tracks.total} songs
+                  {" • " + playlistData?.tracks?.total} songs
                 </>
               )}
             </div>
@@ -159,7 +159,7 @@ export function PlaylistView(props: IPlaylistViewProps) {
             </tr>
           </thead>
           <tbody>
-            {playlistData?.tracks.items.map((track, index) => (
+            {playlistData?.tracks?.items.map((track, index) => (
               <tr
                 key={index}
                 className="hover:bg-secondary"
