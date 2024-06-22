@@ -1,3 +1,4 @@
+"use client";
 import { fetchPlaylistData } from "@/lib/Spotifymethods";
 import { useSession } from "next-auth/react";
 import * as React from "react";
@@ -46,7 +47,7 @@ export function PlaylistView(props: IPlaylistViewProps) {
               const data = await music?.api.library.playlist(props.globalPlaylistId as string);
               const normalizedPlaylists = normalizePlaylistData("apple", data);
               setPlaylistData(normalizedPlaylists);
-              console.log(data);
+              await getDominantColor(normalizedPlaylists);
             } catch (error) {
               console.error("Error fetching playlists:", error);
             }
@@ -171,11 +172,19 @@ export function PlaylistView(props: IPlaylistViewProps) {
                 <td className="pt-2 text-xs pl-5">{index + 1}</td>
                 <td className="flex p-2 pt-3">
                   <div className="mr-2">
+                  {props.service === 'apple' ? (
                     <img
-                      src={track.track?.album?.image?.url}
+                      src={track.track?.album?.image?.url.replace(/\{w\}x\{h\}bb\.jpg$/, `${300}x${300}bb.jpg`)}
                       alt="Track"
-                      className="w-10 h-10"
+                      className="w-10 h-10"  // CSS class for Apple Music image
                     />
+                  ) : (
+                    <img
+                      src={track.track?.album?.image?.url} // Use the original URL for Spotify
+                      alt="Track"
+                      className="w-10 h-10"  // CSS class for Spotify image
+                    />
+                  )}
                   </div>
                   <div className="flex flex-col justify-center">
                     {track.track?.name}
