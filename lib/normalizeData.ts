@@ -151,8 +151,8 @@ export function normalizePlaylistData(source: 'spotify' | 'apple', PlaylistData:
             type: PlaylistData.type
         }
     } else {
-        const normalizedTracks = PlaylistData.tracks.items.map((item: any) => ({
-            track: normalizeTrackData('apple', item.track)
+        const normalizedTracks = PlaylistData.relationships.tracks.data.map((item: any) => ({
+            track: normalizeTrackData('apple', item)
         }));
 
         return{
